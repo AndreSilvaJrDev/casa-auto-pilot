@@ -3,16 +3,17 @@ import { useEffect, useRef, useState } from "react";
 import { QuestionScreen } from "@/components/funnel/QuestionScreen";
 import {
   AnalysisScreen,
-  BeforeAfterScreen,
-  BeliefScreen,
+  AppRevealScreen,
+  CargaMentalScreen,
+  CicloScreen,
+  DeliverablesScreen,
   EditorialScreen,
   HeroScreen,
-  MechanismScreen,
-  PartialDiagnosis,
+  OfferScreen,
   PesoPazScreen,
   ResultScreen,
-  SalesScreen,
   ThirtyDaysScreen,
+  VerdadeScreen,
 } from "@/components/funnel/screens";
 import { Shell } from "@/components/funnel/ui";
 import { questions, type Answers } from "@/lib/funnel";
@@ -52,21 +53,22 @@ const steps: Step[] = [
   { kind: "question", key: "household" },
   { kind: "question", key: "mental_load" },
   { kind: "question", key: "phrase" },
-  { kind: "screen", id: "belief" },
-  { kind: "screen", id: "partial" },
+  { kind: "screen", id: "ciclo" },
   { kind: "screen", id: "editorial" },
-  { kind: "screen", id: "pesopaz" },
+  { kind: "screen", id: "cargamental" },
+  { kind: "screen", id: "verdade" },
   { kind: "question", key: "organization_block" },
-  { kind: "screen", id: "mechanism" },
   { kind: "question", key: "available_time" },
   { kind: "question", key: "priority_room" },
   { kind: "screen", id: "thirty" },
   { kind: "question", key: "desired_result" },
-  { kind: "screen", id: "beforeafter" },
+  { kind: "screen", id: "pesopaz" },
   { kind: "question", key: "commitment" },
   { kind: "screen", id: "analysis" },
   { kind: "screen", id: "result" },
-  { kind: "screen", id: "sales" },
+  { kind: "screen", id: "app" },
+  { kind: "screen", id: "deliverables" },
+  { kind: "screen", id: "offer" },
 ];
 
 const TOTAL_QUESTIONS = steps.filter((s) => s.kind === "question").length;
@@ -143,8 +145,8 @@ function Funnel() {
   };
 
   const step = steps[index] ?? steps[0]!;
-  const showProgress = index > 0 && !(step.kind === "screen" && step.id === "sales");
-  const onBack = index > 0 && !(step.kind === "screen" && (step.id === "analysis" || step.id === "sales"))
+  const showProgress = index > 0 && !(step.kind === "screen" && step.id === "offer");
+  const onBack = index > 0 && !(step.kind === "screen" && (step.id === "analysis" || step.id === "offer"))
     ? () => go(index - 1)
     : undefined;
 
@@ -154,7 +156,7 @@ function Funnel() {
     <Shell
       {...(showProgress ? { progress } : {})}
       onBack={onBack}
-      wide={step.kind === "screen" && step.id === "sales"}
+      wide={step.kind === "screen" && step.id === "offer"}
     >
       {step.kind === "hero" && <HeroScreen onStart={start} />}
       {step.kind === "question" && questions[step.key] && (
@@ -165,28 +167,33 @@ function Funnel() {
           onAnswer={(value) => answer(step.key, value)}
         />
       )}
-      {step.kind === "screen" && step.id === "belief" && <BeliefScreen onNext={() => go(index + 1)} />}
-      {step.kind === "screen" && step.id === "partial" && (
-        <PartialDiagnosis answers={answers} onNext={() => go(index + 1)} />
+      {step.kind === "screen" && step.id === "ciclo" && (
+        <CicloScreen answers={answers} onNext={() => go(index + 1)} />
       )}
       {step.kind === "screen" && step.id === "editorial" && (
         <EditorialScreen onNext={() => go(index + 1)} />
       )}
-      {step.kind === "screen" && step.id === "pesopaz" && <PesoPazScreen onNext={() => go(index + 1)} />}
-      {step.kind === "screen" && step.id === "mechanism" && (
-        <MechanismScreen answers={answers} onNext={() => go(index + 1)} />
+      {step.kind === "screen" && step.id === "cargamental" && (
+        <CargaMentalScreen onNext={() => go(index + 1)} />
+      )}
+      {step.kind === "screen" && step.id === "verdade" && (
+        <VerdadeScreen onNext={() => go(index + 1)} />
       )}
       {step.kind === "screen" && step.id === "thirty" && (
         <ThirtyDaysScreen answers={answers} onNext={() => go(index + 1)} />
       )}
-      {step.kind === "screen" && step.id === "beforeafter" && (
-        <BeforeAfterScreen onNext={() => go(index + 1)} />
-      )}
+      {step.kind === "screen" && step.id === "pesopaz" && <PesoPazScreen onNext={() => go(index + 1)} />}
       {step.kind === "screen" && step.id === "analysis" && <AnalysisScreen onDone={() => go(index + 1)} />}
       {step.kind === "screen" && step.id === "result" && (
         <ResultScreen answers={answers} onNext={() => go(index + 1)} />
       )}
-      {step.kind === "screen" && step.id === "sales" && <SalesScreen answers={answers} />}
+      {step.kind === "screen" && step.id === "app" && (
+        <AppRevealScreen answers={answers} onNext={() => go(index + 1)} />
+      )}
+      {step.kind === "screen" && step.id === "deliverables" && (
+        <DeliverablesScreen onNext={() => go(index + 1)} />
+      )}
+      {step.kind === "screen" && step.id === "offer" && <OfferScreen answers={answers} />}
     </Shell>
   );
 }
