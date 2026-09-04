@@ -159,6 +159,7 @@ function Funnel() {
       {step.kind === "hero" && <HeroScreen onStart={start} />}
       {step.kind === "question" && questions[step.key] && (
         <QuestionScreen
+          key={step.key}
           question={questions[step.key]!}
           current={answers[step.key]}
           onAnswer={(value) => answer(step.key, value)}
