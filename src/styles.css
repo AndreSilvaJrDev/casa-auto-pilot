@@ -37,37 +37,35 @@
   --color-input: var(--border);
   --color-ring: var(--primary);
 
-  --shadow-soft: 0 10px 30px -12px oklch(0.62 0.16 12 / 0.18);
-  --shadow-card: 0 6px 20px -10px oklch(0.62 0.16 12 / 0.16);
-  --shadow-cta: 0 14px 28px -12px oklch(0.62 0.2 15 / 0.5);
+  --shadow-soft: 0 24px 60px -24px rgb(189 77 102 / 0.28);
+  --shadow-card: 0 8px 26px -14px rgb(111 61 72 / 0.2);
+  --shadow-cta: 0 18px 34px -14px rgb(223 70 105 / 0.52);
 }
 
 :root {
   --radius: 1.125rem;
-  /* #FFF9F8 */
+
   --background: oklch(0.988 0.006 17.5);
-  /* #292627 */
-  --foreground: oklch(0.271 0.004 17.2);
-  /* #FFF3F4 */
-  --surface: oklch(0.972 0.012 12);
+  --foreground: oklch(0.245 0.008 330);
+  --surface: oklch(0.975 0.012 12);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.271 0.004 17.2);
-  /* #F3788D */
-  --primary: oklch(0.7 0.135 8.5);
+  --card-foreground: oklch(0.245 0.008 330);
+
+  --primary: oklch(0.70 0.145 9);
   --primary-foreground: oklch(1 0 0);
-  /* #EF5F79 */
-  --cta: oklch(0.671 0.163 9.5);
-  /* #FDE6EA */
-  --secondary: oklch(0.945 0.021 8);
-  --secondary-foreground: oklch(0.51 0.14 9);
-  --muted: oklch(0.972 0.012 12);
-  /* #777174 */
-  --muted-foreground: oklch(0.548 0.006 340);
-  --accent: oklch(0.945 0.021 8);
-  --accent-foreground: oklch(0.51 0.14 9);
+  --cta: oklch(0.66 0.18 10);
+
+  --secondary: oklch(0.95 0.024 9);
+  --secondary-foreground: oklch(0.49 0.12 10);
+
+  --muted: oklch(0.97 0.01 10);
+  --muted-foreground: oklch(0.52 0.012 330);
+
+  --accent: oklch(0.945 0.028 10);
+  --accent-foreground: oklch(0.49 0.12 10);
+
   --destructive: oklch(0.577 0.245 27.325);
-  /* #F3E5E7 */
-  --border: oklch(0.928 0.011 9);
+  --border: oklch(0.92 0.014 8);
 }
 
 @layer base {
@@ -77,35 +75,41 @@
 
   html {
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: var(--color-background);
+    min-width: 320px;
+    background:
+      radial-gradient(circle at 8% 10%, rgb(255 229 235 / 0.72), transparent 28rem),
+      radial-gradient(circle at 95% 35%, rgb(255 240 243 / 0.76), transparent 26rem),
+      var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
   }
-}
 
-@utility headline {
-  font-family: var(--font-display);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: rgb(243 120 141 / 0.25);
+  }
 }
 
 @utility eyebrow {
   font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 0.7rem;
+  font-weight: 800;
+  font-size: 0.68rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-primary);

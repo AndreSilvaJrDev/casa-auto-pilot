@@ -9,6 +9,7 @@ import {
   DeliverablesScreen,
   EditorialScreen,
   HeroScreen,
+  NewsScreen,
   OfferScreen,
   PesoPazScreen,
   ResultScreen,
@@ -27,13 +28,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Descubra em 2 minutos a rotina de casa que cabe no seu dia. Casa sempre em ordem sem passar o dia inteiro limpando.",
+          "Descubra em 1 minuto a rotina de casa que cabe no seu dia. Casa mais organizada sem passar o dia inteiro limpando.",
       },
       { property: "og:title", content: "Casa no Automático | Tenha sua casa sempre em ordem" },
       {
         property: "og:description",
         content:
-          "Responda 9 perguntas rápidas e receba a rotina certa para a sua casa e o seu tempo.",
+          "Responda perguntas rápidas e receba uma recomendação de rotina para a sua casa.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -68,13 +69,14 @@ const steps: Step[] = [
   { kind: "screen", id: "analysis" },
   { kind: "screen", id: "result" },
   { kind: "screen", id: "app" },
+  { kind: "screen", id: "news" },
   { kind: "screen", id: "deliverables" },
   { kind: "screen", id: "transformation" },
   { kind: "screen", id: "offer" },
 ];
 
 const TOTAL_QUESTIONS = steps.filter((s) => s.kind === "question").length;
-const STORAGE_KEY = "cna_funnel_state";
+const STORAGE_KEY = "cna_funnel_state_v4";
 
 function Funnel() {
   const [index, setIndex] = useState(0);
@@ -91,13 +93,8 @@ function Funnel() {
         const parsed = JSON.parse(raw) as { index?: number; answers?: Answers };
         if (parsed.answers) setAnswers(parsed.answers);
         if (typeof parsed.index === "number") {
-          // nunca restaura direto na tela de análise
           const saved = steps[parsed.index];
-          const restored =
-            saved && saved.kind === "screen" && saved.id === "analysis"
-              ? parsed.index + 1
-              : parsed.index;
-
+          const restored = saved && saved.kind === "screen" && saved.id === "analysis" ? parsed.index + 1 : parsed.index;
           setIndex(Math.min(Math.max(restored, 0), steps.length - 1));
         }
       }
@@ -116,18 +113,12 @@ function Funnel() {
     }
   }, [index, answers, ready]);
 
-  // O progresso acompanha o funil inteiro, inclusive as telas persuasivas.
-  const resultIndex = steps.findIndex(
-    (s) => s.kind === "screen" && s.id === "result",
-  );
-  const progress =
-    resultIndex > 0
-      ? Math.min(100, Math.max(4, (index / resultIndex) * 100))
-      : 0;
+  const resultIndex = steps.findIndex((s) => s.kind === "screen" && s.id === "result");
+  const progress = resultIndex > 0 ? Math.min(100, Math.max(5, (index / resultIndex) * 100)) : 0;
 
   const go = (next: number) => {
     setIndex(Math.min(next, steps.length - 1));
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const start = () => {
@@ -139,7 +130,6 @@ function Funnel() {
     const nextAnswers = { ...answers, [key]: value };
     setAnswers(nextAnswers);
     track("question_answered", { question: key, answer: value });
-
     const count = Object.keys(nextAnswers).filter((k) => k in questions).length;
     const pct = (count / TOTAL_QUESTIONS) * 100;
     for (const m of [25, 50, 75]) {
@@ -153,57 +143,30 @@ function Funnel() {
   };
 
   const step = steps[index] ?? steps[0]!;
-  const showProgress = index > 0 && !(step.kind === "screen" && step.id === "offer");
-  const onBack = index > 0 && !(step.kind === "screen" && (step.id === "analysis" || step.id === "offer"))
-    ? () => go(index - 1)
-    : undefined;
+  const salesIds = new Set(["result", "app", "news", "deliverables", "transformation", "offer"]);
+  const showProgress = index > 0 && !(step.kind === "screen" && salesIds.has(step.id));
+  const onBack = index > 0 && !(step.kind === "screen" && (step.id === "analysis" || step.id === "offer")) ? () => go(index - 1) : undefined;
 
   if (!ready) return <div className="min-h-screen bg-background" />;
 
   return (
-    <Shell
-      {...(showProgress ? { progress } : {})}
-      onBack={onBack}
-      wide={step.kind === "screen" && step.id === "offer"}
-    >
+    <Shell {...(showProgress ? { progress } : {})} onBack={onBack} wide={step.kind === "hero" || (step.kind === "screen" && step.id === "offer")}>
       {step.kind === "hero" && <HeroScreen onStart={start} />}
       {step.kind === "question" && questions[step.key] && (
-        <QuestionScreen
-          key={step.key}
-          question={questions[step.key]!}
-          current={answers[step.key]}
-          onAnswer={(value) => answer(step.key, value)}
-        />
+        <QuestionScreen key={step.key} question={questions[step.key]!} current={answers[step.key]} onAnswer={(value) => answer(step.key, value)} />
       )}
-      {step.kind === "screen" && step.id === "ciclo" && (
-        <CicloScreen answers={answers} onNext={() => go(index + 1)} />
-      )}
-      {step.kind === "screen" && step.id === "editorial" && (
-        <EditorialScreen onNext={() => go(index + 1)} />
-      )}
-      {step.kind === "screen" && step.id === "cargamental" && (
-        <CargaMentalScreen onNext={() => go(index + 1)} />
-      )}
-      {step.kind === "screen" && step.id === "verdade" && (
-        <VerdadeScreen onNext={() => go(index + 1)} />
-      )}
-      {step.kind === "screen" && step.id === "thirty" && (
-        <ThirtyDaysScreen answers={answers} onNext={() => go(index + 1)} />
-      )}
+      {step.kind === "screen" && step.id === "ciclo" && <CicloScreen answers={answers} onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "editorial" && <EditorialScreen onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "cargamental" && <CargaMentalScreen onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "verdade" && <VerdadeScreen onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "thirty" && <ThirtyDaysScreen answers={answers} onNext={() => go(index + 1)} />}
       {step.kind === "screen" && step.id === "pesopaz" && <PesoPazScreen onNext={() => go(index + 1)} />}
       {step.kind === "screen" && step.id === "analysis" && <AnalysisScreen onDone={() => go(index + 1)} />}
-      {step.kind === "screen" && step.id === "result" && (
-        <ResultScreen answers={answers} onNext={() => go(index + 1)} />
-      )}
-      {step.kind === "screen" && step.id === "app" && (
-        <AppRevealScreen answers={answers} onNext={() => go(index + 1)} />
-      )}
-      {step.kind === "screen" && step.id === "deliverables" && (
-        <DeliverablesScreen onNext={() => go(index + 1)} />
-      )}
-      {step.kind === "screen" && step.id === "transformation" && (
-        <TransformationScreen onNext={() => go(index + 1)} />
-      )}
+      {step.kind === "screen" && step.id === "result" && <ResultScreen answers={answers} onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "app" && <AppRevealScreen answers={answers} onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "news" && <NewsScreen onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "deliverables" && <DeliverablesScreen onNext={() => go(index + 1)} />}
+      {step.kind === "screen" && step.id === "transformation" && <TransformationScreen onNext={() => go(index + 1)} />}
       {step.kind === "screen" && step.id === "offer" && <OfferScreen answers={answers} />}
     </Shell>
   );

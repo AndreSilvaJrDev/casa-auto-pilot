@@ -5,7 +5,12 @@ const salaImg = "/quiz/room_sala.png";
 const lavanderiaImg = "/quiz/room_lavanderia.png";
 const casaImg = "/quiz/02_casa_organizada.png";
 
-/** Cole aqui a URL de checkout da Kiwify. */
+const filhosPequenosImg = "/quiz/icons/filhos-pequenos.png";
+const filhosMaioresImg = "/quiz/icons/filhos-maiores.png";
+const parceiroFamiliaImg = "/quiz/icons/parceiro-familia.png";
+const soEuCasaImg = "/quiz/icons/so-eu-casa.png";
+
+/** Checkout principal do produto. */
 export const CHECKOUT_URL = "https://pay.kiwify.com.br/PV3pouM";
 
 export const PRICE_LABEL = "R$37";
@@ -34,14 +39,14 @@ export const questions: Record<string, Question> = {
     title: "A sua casa hoje te dá paz ou te dá peso?",
     options: [
       { value: "peso", emoji: "😮‍💨", label: "Mais peso do que paz, confesso" },
-      { value: "cansada", emoji: "😔", label: "Vivo cansada, nunca fica como eu queria" },
+      { value: "cansada", emoji: "😔", label: "Vivo cansada e nunca fica como eu queria" },
       { value: "ciclo", emoji: "🤍", label: "Tem dias bons e dias de sufoco" },
       { value: "tranquila", emoji: "🙂", label: "Está tranquila, mas quero melhorar" },
     ],
   },
   main_pain: {
     key: "main_pain",
-    eyebrow: "Só mais uma coisa",
+    eyebrow: "Vamos entender sua rotina",
     title: "O que mais te pesa no dia a dia?",
     options: [
       { value: "tudo_em_mim", emoji: "😮‍💨", label: "Sentir que tudo cai em mim" },
@@ -54,25 +59,41 @@ export const questions: Record<string, Question> = {
     key: "household",
     title: "Você cuida da casa e de mais quem?",
     options: [
-      { value: "filhos_pequenos", label: "Filhos pequenos" },
-      { value: "filhos_maiores", label: "Filhos maiores" },
-      { value: "parceiro_familia", label: "Parceiro e família" },
-      { value: "so_eu", label: "Só de mim e da minha casa" },
+      {
+        value: "filhos_pequenos",
+        label: "Filhos pequenos (a rotina é uma loucura)",
+        image: filhosPequenosImg,
+      },
+      {
+        value: "filhos_maiores",
+        label: "Filhos maiores, mas dou conta de tudo",
+        image: filhosMaioresImg,
+      },
+      {
+        value: "parceiro_familia",
+        label: "Do meu marido e da casa",
+        image: parceiroFamiliaImg,
+      },
+      {
+        value: "so_eu",
+        label: "Só de mim e da minha casa",
+        image: soEuCasaImg,
+      },
     ],
   },
   mental_load: {
     key: "mental_load",
-    title: "Em casa, quem segura a maior parte?",
+    title: "Em casa, quem segura a maior parte da rotina?",
     options: [
       { value: "tudo_em_mim", emoji: "😩", label: "Praticamente tudo cai em mim" },
       { value: "quase_tudo", emoji: "🤷", label: "Eu faço quase tudo" },
-      { value: "penso_tudo", emoji: "🙏", label: "Tenho alguma ajuda, mas o peso ainda é meu" },
-      { value: "dividimos", emoji: "👫", label: "A gente divide, mas falta organização" },
+      { value: "penso_tudo", emoji: "🧠", label: "Tenho ajuda, mas ainda preciso pensar em tudo" },
+      { value: "dividimos", emoji: "🤝", label: "A gente divide, mas falta organização" },
     ],
   },
   phrase: {
     key: "phrase",
-    title: "Qual dessas frases mais bate com você?",
+    title: "Qual dessas frases mais parece ter saído da sua boca?",
     options: [
       { value: "volta", emoji: "🔁", label: "“Arrumo e poucos dias depois já está tudo igual.”" },
       { value: "prioridade", emoji: "🍳", label: "“Não aguento mais pensar no que fazer na cozinha.”" },
@@ -82,10 +103,10 @@ export const questions: Record<string, Question> = {
   },
   organization_block: {
     key: "organization_block",
-    title: "O que mais te trava na hora de organizar?",
+    title: "O que mais te trava quando você tenta colocar a casa em ordem?",
     options: [
       { value: "por_onde", emoji: "🤯", label: "Não sei por onde começar" },
-      { value: "dez_coisas", emoji: "⏳", label: "Começo e nunca termino" },
+      { value: "dez_coisas", emoji: "⏳", label: "Começo várias coisas e não termino" },
       { value: "tempo", emoji: "😮‍💨", label: "Falta tempo e energia" },
       { value: "volta", emoji: "🔁", label: "Arrumo e logo volta tudo" },
     ],
@@ -94,11 +115,11 @@ export const questions: Record<string, Question> = {
     key: "available_time",
     title: "Quanto tempo você conseguiria separar por dia?",
     options: [
-      { value: "10", label: "10 minutos" },
-      { value: "15", label: "15 minutos" },
-      { value: "20", label: "20 minutos" },
-      { value: "30", label: "30 minutos" },
-      { value: "30+", label: "Mais de 30 minutos" },
+      { value: "10", emoji: "⏱️", label: "10 minutos" },
+      { value: "15", emoji: "⏱️", label: "15 minutos" },
+      { value: "20", emoji: "⏱️", label: "20 minutos" },
+      { value: "30", emoji: "⏱️", label: "30 minutos" },
+      { value: "30+", emoji: "✨", label: "Mais de 30 minutos" },
     ],
   },
   priority_room: {
@@ -116,29 +137,26 @@ export const questions: Record<string, Question> = {
   },
   desired_result: {
     key: "desired_result",
-    title: "Qual seria a sua maior vitória?",
+    title: "Se isso desse certo, qual seria a sua maior vitória?",
     options: [
       { value: "controle", emoji: "🏡", label: "Ter a casa em ordem sem sofrer" },
-      { value: "refeicoes", emoji: "🍽", label: "Ter a cozinha organizada" },
-      { value: "tempo", emoji: "🕊", label: "Ter mais tempo e paz" },
-      { value: "orgulho", emoji: "👑", label: "Sentir orgulho da minha casa" },
+      { value: "refeicoes", emoji: "🍽️", label: "Parar de viver no improviso na cozinha" },
+      { value: "tempo", emoji: "🕊️", label: "Ter mais tempo e paz" },
+      { value: "orgulho", emoji: "✨", label: "Sentir orgulho da minha casa" },
     ],
   },
   commitment: {
     key: "commitment",
-    title: "Se existisse um caminho simples e barato, você começaria hoje?",
+    title: "Se existisse um caminho simples para começar, você começaria hoje?",
     options: [
-      { value: "agora", emoji: "🔥", label: "Sim, estou decidida" },
-      { value: "simples", emoji: "💕", label: "Sim, se for fácil" },
-      { value: "recomecar", emoji: "✅", label: "Já passou da hora" },
+      { value: "agora", emoji: "🔥", label: "Sim, quero começar agora" },
+      { value: "simples", emoji: "💕", label: "Sim, se for simples de seguir" },
+      { value: "recomecar", emoji: "✅", label: "Já passou da hora de mudar isso" },
     ],
   },
 };
 
-
 export const QUESTION_KEYS = Object.keys(questions);
-
-/* ---------- diagnóstico ---------- */
 
 export type Scores = {
   acumulo: number;
@@ -210,11 +228,13 @@ export function computeScores(a: Answers): Scores {
     tempo: clamp(tempo),
     signals: 0,
   };
+
   scores.signals =
     (scores.acumulo >= 7 ? 1 : 0) +
     (scores.cargaMental >= 7 ? 1 : 0) +
     (scores.clareza <= 5 ? 1 : 0) +
     (scores.tempo <= 5 ? 1 : 0);
+
   return scores;
 }
 
@@ -280,8 +300,6 @@ export function timeLabel(a: Answers): string {
 export function roomLabel(a: Answers): string {
   return a["priority_room"] ?? "Cozinha";
 }
-
-/* ---------- diagnóstico central ---------- */
 
 export type Diagnosis = {
   overload_score: number;

@@ -13,75 +13,109 @@ export function Shell({
   wide?: boolean;
 }) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       {typeof progress === "number" && (
-        <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-[560px] items-center gap-3 px-5 py-3">
-            {onBack ? (
-              <button
-                type="button"
-                onClick={onBack}
-                aria-label="Voltar"
-                className="shrink-0 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
-              >
-                ←
-              </button>
-            ) : (
-              <span className="w-3 shrink-0" />
-            )}
-            <div className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-secondary">
+        <header className="sticky top-0 z-30 border-b border-border/70 bg-background/95 backdrop-blur">
+          <div className="mx-auto w-full max-w-[620px] px-4 pb-3 pt-3 sm:px-5">
+            <div className="relative flex items-center justify-center">
+              {onBack ? (
+                <button
+                  type="button"
+                  onClick={onBack}
+                  aria-label="Voltar"
+                  className="absolute left-0 grid h-9 w-9 place-items-center rounded-full text-xl text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                >
+                  ‹
+                </button>
+              ) : null}
+
+              <div className="text-center">
+                <div className="text-[0.72rem] font-black uppercase tracking-[0.18em] text-foreground">
+                  CASA NO <span className="text-cta">AUTOMÁTICO</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 h-2 overflow-hidden rounded-full border border-primary/15 bg-secondary">
               <div
-                className="h-full rounded-full bg-primary transition-all duration-500"
-                style={{ width: `${Math.max(4, progress)}%` }}
+                className="h-full rounded-full bg-gradient-to-r from-primary to-cta transition-all duration-500"
+                style={{ width: `${Math.max(5, progress)}%` }}
               />
             </div>
-            <span className="shrink-0 text-[11px] font-semibold tabular-nums text-muted-foreground">
-              {Math.round(progress)}%
-            </span>
           </div>
-        </div>
+        </header>
       )}
-      <div
+
+      <main
         className={cn(
-          "mx-auto w-full px-5 pb-16 pt-6",
-          wide ? "max-w-[620px]" : "max-w-[560px]",
+          "mx-auto w-full px-4 pb-14 pt-5 sm:px-5 sm:pb-16",
+          wide ? "max-w-[1080px]" : "max-w-[620px]",
         )}
       >
         {children}
-      </div>
+      </main>
     </div>
   );
 }
 
 export function Fade({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("animate-in fade-in slide-in-from-bottom-2 duration-500", className)}>{children}</div>;
+  return (
+    <div
+      className={cn(
+        "animate-in fade-in slide-in-from-bottom-2 duration-500",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
 }
 
 export function Screen({ children, className }: { children: ReactNode; className?: string }) {
-  return <Fade className={cn("pt-1", className)}>{children}</Fade>;
+  return (
+    <Fade className={cn("mx-auto w-full max-w-[580px] pt-2", className)}>
+      {children}
+    </Fade>
+  );
 }
 
 export function Trust() {
   return (
-    <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[0.75rem] font-semibold text-muted-foreground">
-      <li>⏰ Leva 1 minuto</li>
-      <li>🔒 Respostas privadas</li>
-      <li>🛡️ Resultado personalizado</li>
-    </ul>
+    <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[0.76rem] font-semibold text-muted-foreground">
+      <span>◷ Leva cerca de 1 minuto</span>
+      <span>▣ Respostas privadas</span>
+    </div>
   );
 }
-
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return <p className="eyebrow mb-3">{children}</p>;
 }
 
 export function H({ children, className }: { children: ReactNode; className?: string }) {
-  return <h2 className={cn("headline text-[1.6rem] leading-[1.08] sm:text-[1.9rem]", className)}>{children}</h2>;
+  return (
+    <h2
+      className={cn(
+        "font-display text-[1.72rem] font-black leading-[1.06] tracking-[-0.035em] sm:text-[2rem]",
+        className,
+      )}
+    >
+      {children}
+    </h2>
+  );
 }
 
 export function P({ children, className }: { children: ReactNode; className?: string }) {
-  return <p className={cn("text-[0.98rem] leading-relaxed text-muted-foreground", className)}>{children}</p>;
+  return (
+    <p
+      className={cn(
+        "text-[0.98rem] leading-[1.65] text-muted-foreground",
+        className,
+      )}
+    >
+      {children}
+    </p>
+  );
 }
 
 export function Cta({
@@ -96,26 +130,40 @@ export function Cta({
   className?: string;
 }) {
   const classes = cn(
-    "block w-full rounded-full bg-cta px-6 py-4 text-center text-[0.95rem] font-extrabold uppercase tracking-wide text-cta-foreground shadow-cta transition-transform active:scale-[0.985] hover:brightness-105",
+    "group flex min-h-[56px] w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-primary to-cta px-6 py-4 text-center text-[0.93rem] font-black uppercase tracking-[0.025em] text-white shadow-cta transition hover:-translate-y-0.5 hover:brightness-[1.03] active:translate-y-0 active:scale-[0.99]",
     className,
   );
+
+  const inner = (
+    <>
+      <span>{children}</span>
+      <span className="text-xl transition-transform group-hover:translate-x-1">→</span>
+    </>
+  );
+
   if (href) {
     return (
       <a href={href} onClick={onClick} className={classes}>
-        {children}
+        {inner}
       </a>
     );
   }
+
   return (
     <button type="button" onClick={onClick} className={classes}>
-      {children}
+      {inner}
     </button>
   );
 }
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("rounded-3xl border border-border bg-card p-5 shadow-card", className)}>
+    <div
+      className={cn(
+        "rounded-[1.45rem] border border-border/90 bg-card p-5 shadow-card",
+        className,
+      )}
+    >
       {children}
     </div>
   );
@@ -137,7 +185,10 @@ export function Photo({
       src={src}
       alt={alt}
       loading={eager ? "eager" : "lazy"}
-      className={cn("w-full rounded-3xl object-cover shadow-soft", className)}
+      className={cn(
+        "w-full rounded-[1.6rem] border border-white/70 object-cover shadow-soft",
+        className,
+      )}
     />
   );
 }
