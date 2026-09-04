@@ -12,7 +12,6 @@ import {
 import { track, withTrackingParams } from "@/lib/tracking";
 import { Bar, Card, Cta, Eyebrow, Fade, H, P, Photo } from "./ui";
 
-import heroAsset from "@/assets/hero_lp.png.asset.json";
 import caosAsset from "@/assets/01_casa_caotica.png.asset.json";
 import ordemAsset from "@/assets/02_casa_organizada.png.asset.json";
 import sobrecargaAsset from "@/assets/03_mulher_sobrecarregada.png.asset.json";
@@ -33,7 +32,7 @@ export function HeroScreen({ onStart }: { onStart: () => void }) {
         Sem passar o dia inteiro limpando. Responda 9 perguntas rápidas e descubra a rotina que cabe
         na sua vida real.
       </P>
-      <Photo src={heroAsset.url} alt="Casa organizada e acolhedora" className="mt-6 aspect-[4/5]" eager />
+      <Photo src={ordemAsset.url} alt="Casa organizada e acolhedora" className="mt-6 aspect-[4/5]" eager />
       <div className="mt-6">
         <Cta onClick={onStart}>Quero descobrir minha rotina</Cta>
       </div>
