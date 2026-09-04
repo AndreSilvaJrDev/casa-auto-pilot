@@ -13,6 +13,7 @@ import {
   PesoPazScreen,
   ResultScreen,
   ThirtyDaysScreen,
+  TransformationScreen,
   VerdadeScreen,
 } from "@/components/funnel/screens";
 import { Shell } from "@/components/funnel/ui";
@@ -68,6 +69,7 @@ const steps: Step[] = [
   { kind: "screen", id: "result" },
   { kind: "screen", id: "app" },
   { kind: "screen", id: "deliverables" },
+  { kind: "screen", id: "transformation" },
   { kind: "screen", id: "offer" },
 ];
 
@@ -114,8 +116,14 @@ function Funnel() {
     }
   }, [index, answers, ready]);
 
-  const answeredCount = Object.keys(answers).filter((k) => k in questions).length;
-  const progress = Math.min(100, (answeredCount / TOTAL_QUESTIONS) * 100);
+  // O progresso acompanha o funil inteiro, inclusive as telas persuasivas.
+  const resultIndex = steps.findIndex(
+    (s) => s.kind === "screen" && s.id === "result",
+  );
+  const progress =
+    resultIndex > 0
+      ? Math.min(100, Math.max(4, (index / resultIndex) * 100))
+      : 0;
 
   const go = (next: number) => {
     setIndex(Math.min(next, steps.length - 1));
@@ -192,6 +200,9 @@ function Funnel() {
       )}
       {step.kind === "screen" && step.id === "deliverables" && (
         <DeliverablesScreen onNext={() => go(index + 1)} />
+      )}
+      {step.kind === "screen" && step.id === "transformation" && (
+        <TransformationScreen onNext={() => go(index + 1)} />
       )}
       {step.kind === "screen" && step.id === "offer" && <OfferScreen answers={answers} />}
     </Shell>

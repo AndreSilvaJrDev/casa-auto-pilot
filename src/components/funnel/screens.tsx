@@ -12,14 +12,15 @@ import {
 import { track, withTrackingParams } from "@/lib/tracking";
 import { Card, Cta, Eyebrow, Fade, H, P, Photo, Screen, Trust } from "./ui";
 
-import caosAsset from "@/assets/01_casa_caotica.png.asset.json";
-import ordemAsset from "@/assets/02_casa_organizada.png.asset.json";
-import sobrecargaAsset from "@/assets/03_mulher_sobrecarregada.png.asset.json";
-import pesoPazAsset from "@/assets/04_peso_vs_paz.png.asset.json";
-import cozinhaAsset from "@/assets/05_prova_visual_cozinha.png.asset.json";
-import pisoAsset from "@/assets/06_prova_visual_piso.png.asset.json";
-import casaAsset from "@/assets/07_prova_visual_casa.png.asset.json";
-import appAsset from "@/assets/app_mockup.png.asset.json";
+// Assets locais: independentes das URLs internas do Lovable.
+const caosAsset = "/quiz/01_casa_caotica.png";
+const ordemAsset = "/quiz/02_casa_organizada.png";
+const sobrecargaAsset = "/quiz/03_mulher_sobrecarregada.png";
+const pesoPazAsset = "/quiz/04_peso_vs_paz.png";
+const cozinhaAsset = "/quiz/05_prova_visual_cozinha.png";
+const pisoAsset = "/quiz/06_prova_visual_piso.png";
+const casaAsset = "/quiz/07_prova_visual_casa.png";
+const appAsset = "/quiz/app_mockup.png";
 
 /* ---------------- 1. HERO ---------------- */
 
@@ -37,7 +38,7 @@ export function HeroScreen({ onStart }: { onStart: () => void }) {
       </p>
       <div className="relative mt-5 overflow-hidden rounded-[2rem] shadow-soft">
         <img
-          src={ordemAsset.url}
+          src={ordemAsset}
           alt="Casa organizada e acolhedora"
           loading="eager"
           className="h-[30svh] max-h-[260px] w-full object-cover"
@@ -73,7 +74,7 @@ export function CicloScreen({ answers, onNext }: { answers: Answers; onNext: () 
         <br />
         Você está presa no ciclo do acúmulo.
       </H>
-      <Photo src={caosAsset.url} alt="Casa no sufoco" className="mt-4 aspect-[4/3]" />
+      <Photo src={caosAsset} alt="Casa no sufoco" className="mt-4 aspect-[4/3]" />
       <P className="mt-4">Veja onde sua energia está indo sem você perceber.</P>
       <div className="mt-4 space-y-3">
         {blocks.map(([label, pct, desc]) => (
@@ -122,7 +123,7 @@ export function EditorialScreen({ onNext }: { onNext: () => void }) {
         <p className="eyebrow">Especial Casa & Rotina</p>
         <H className="mt-2">Por que a casa parece não terminar nunca?</H>
         <Photo
-          src={sobrecargaAsset.url}
+          src={sobrecargaAsset}
           alt="Mulher sobrecarregada com a rotina da casa"
           className="mt-4 aspect-[4/3]"
         />
@@ -164,7 +165,7 @@ export function CargaMentalScreen({ onNext }: { onNext: () => void }) {
     <Screen>
       <Eyebrow>O peso que ninguém vê</Eyebrow>
       <H>Cansada de ser a única que precisa pensar na casa?</H>
-      <Photo src={sobrecargaAsset.url} alt="Carga mental da rotina" className="mt-4 aspect-[4/5]" />
+      <Photo src={sobrecargaAsset} alt="Carga mental da rotina" className="mt-4 aspect-[4/5]" />
       <div className="mt-4 flex flex-wrap gap-2">
         {mentalItems.map((item) => (
           <span
@@ -252,7 +253,7 @@ export function PesoPazScreen({ onNext }: { onNext: () => void }) {
       <Eyebrow>Escolha um lado</Eyebrow>
       <H>De que lado você quer estar?</H>
       <P className="mt-3">Toque no lado que você quer para sua vida.</P>
-      <Photo src={pesoPazAsset.url} alt="Peso x paz" className="mt-4 aspect-[4/3]" />
+      <Photo src={pesoPazAsset} alt="Peso x paz" className="mt-4 aspect-[4/3]" />
       <div className="mt-4 grid grid-cols-2 gap-3">
         <button
           type="button"
@@ -452,7 +453,7 @@ export function AppRevealScreen({ answers, onNext }: { answers: Answers; onNext:
         fazer hoje.
       </P>
       <img
-        src={appAsset.url}
+        src={appAsset}
         alt="Aplicativo Casa no Automático aberto no celular"
         loading="eager"
         className="mx-auto mt-5 w-full max-w-[420px] rounded-[2rem] object-cover shadow-soft"
@@ -502,7 +503,7 @@ export function DeliverablesScreen({ onNext }: { onNext: () => void }) {
         Você não recebe só uma lista. Recebe um sistema dentro do celular.
       </P>
       <img
-        src={appAsset.url}
+        src={appAsset}
         alt="App Casa no Automático no celular"
         loading="lazy"
         className="mx-auto mt-5 w-full max-w-[380px] rounded-[2rem] object-cover shadow-soft"
@@ -534,9 +535,9 @@ export function TransformationScreen({ onNext }: { onNext: () => void }) {
         <span className="text-cta">para casa em ordem</span>
       </h2>
       <div className="mt-5 space-y-4">
-        <Photo src={cozinhaAsset.url} alt="Cozinha antes e depois" className="aspect-[4/3]" />
-        <Photo src={pisoAsset.url} alt="Piso antes e depois" className="aspect-[4/3]" />
-        <Photo src={casaAsset.url} alt="Casa antes e depois" className="aspect-[4/3]" />
+        <Photo src={cozinhaAsset} alt="Cozinha antes e depois" className="aspect-[4/3]" />
+        <Photo src={pisoAsset} alt="Piso antes e depois" className="aspect-[4/3]" />
+        <Photo src={casaAsset} alt="Casa antes e depois" className="aspect-[4/3]" />
       </div>
       <p className="mt-5 text-[1rem] font-bold leading-relaxed">
         Não é sobre perfeição. É sobre parar de começar tudo do zero.
@@ -631,7 +632,7 @@ export function OfferScreen({ answers }: { answers: Answers }) {
       </section>
 
       <section className="text-center">
-        <Photo src={ordemAsset.url} alt="Casa em ordem" className="aspect-[4/3]" />
+        <Photo src={ordemAsset} alt="Casa em ordem" className="aspect-[4/3]" />
         <H className="mt-6">
           A diferença não é ter uma casa perfeita. É parar de precisar recomeçar do zero.
         </H>

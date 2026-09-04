@@ -1,9 +1,9 @@
-import quartoImg from "@/assets/room_quarto.jpg";
-import banheiroImg from "@/assets/room_banheiro.jpg";
-import lavanderiaImg from "@/assets/room_lavanderia.jpg";
-import cozinhaAsset from "@/assets/05_prova_visual_cozinha.png.asset.json";
-import salaAsset from "@/assets/07_prova_visual_casa.png.asset.json";
-import casaAsset from "@/assets/02_casa_organizada.png.asset.json";
+const cozinhaImg = "/quiz/room_cozinha.png";
+const quartoImg = "/quiz/room_quarto.png";
+const banheiroImg = "/quiz/room_banheiro.png";
+const salaImg = "/quiz/room_sala.png";
+const lavanderiaImg = "/quiz/room_lavanderia.png";
+const casaImg = "/quiz/02_casa_organizada.png";
 
 /** Cole aqui a URL de checkout da Kiwify. */
 export const CHECKOUT_URL = "https://pay.kiwify.com.br/PV3pouM";
@@ -106,12 +106,12 @@ export const questions: Record<string, Question> = {
     title: "Qual ambiente mais te faz perder o controle?",
     layout: "cards",
     options: [
-      { value: "Cozinha", label: "Cozinha", image: cozinhaAsset.url },
+      { value: "Cozinha", label: "Cozinha", image: cozinhaImg },
       { value: "Quarto", label: "Quarto", image: quartoImg },
       { value: "Banheiro", label: "Banheiro", image: banheiroImg },
-      { value: "Sala", label: "Sala", image: salaAsset.url },
+      { value: "Sala", label: "Sala", image: salaImg },
       { value: "Lavanderia", label: "Lavanderia", image: lavanderiaImg },
-      { value: "A casa toda", label: "A casa toda", image: casaAsset.url },
+      { value: "A casa toda", label: "A casa toda", image: casaImg },
     ],
   },
   desired_result: {
