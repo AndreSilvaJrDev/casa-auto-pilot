@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   CHECKOUT_URL,
   PRICE_LABEL,
-  computeScores,
+  calculateDiagnosis,
   pickProfile,
   pressureLevel,
   roomLabel,
@@ -58,11 +58,11 @@ export function HeroScreen({ onStart }: { onStart: () => void }) {
 /* ---------------- 2. QUEBRA — CICLO DO ACÚMULO ---------------- */
 
 export function CicloScreen({ answers, onNext }: { answers: Answers; onNext: () => void }) {
-  const s = computeScores(answers);
+  const d = calculateDiagnosis(answers);
   const blocks = [
-    ["Tarefas refeitas", s.acumulo * 10, "O mesmo serviço voltando poucos dias depois."],
-    ["Rotina sem prioridade", (10 - s.clareza) * 10, "Você decide na hora, com a casa já pedindo tudo."],
-    ["Acúmulo diário", Math.round((s.acumulo + s.cargaMental) * 5), "Pequenas coisas somando até virar faxina."],
+    ["Tarefas refeitas", d.accumulation_score, "O mesmo serviço voltando poucos dias depois."],
+    ["Rotina sem prioridade", d.priority_score, "Você decide na hora, com a casa já pedindo tudo."],
+    ["Acúmulo diário", d.mental_load_score, "Pequenas coisas somando até virar faxina."],
   ] as const;
 
   return (
@@ -96,6 +96,9 @@ export function CicloScreen({ answers, onNext }: { answers: Answers; onNext: () 
           </Card>
         ))}
       </div>
+      <p className="mt-3 text-[0.72rem] text-muted-foreground">
+        Índice calculado a partir das suas respostas.
+      </p>
       <P className="mt-5">
         Você limpa. Cansa. Pequenas coisas acumulam. E alguns dias depois parece que voltou ao
         começo.
@@ -342,11 +345,19 @@ export function AnalysisScreen({ onDone }: { onDone: () => void }) {
 /* ---------------- 9. DIAGNÓSTICO ---------------- */
 
 export function ResultScreen({ answers, onNext }: { answers: Answers; onNext: () => void }) {
-  const profile = pickProfile(answers);
-  const level = pressureLevel(answers);
+  const d = calculateDiagnosis(answers);
+  const profile = d.profile;
+  const level = d.overload_score;
   useEffect(() => {
     track("diagnosis_viewed", { profile: profile.id }, true);
   }, [profile.id]);
+
+  const rows = [
+    ["Seu tempo disponível", d.time],
+    ["Seu ponto de maior atenção", d.room],
+    ["Seu principal bloqueio", d.block],
+    ["Sua estratégia recomendada", d.strategy],
+  ] as const;
 
   return (
     <Screen>
@@ -375,18 +386,25 @@ export function ResultScreen({ answers, onNext }: { answers: Answers; onNext: ()
         <p className="mt-4 text-[0.85rem] font-semibold">
           Nível de sobrecarga: <span className="text-cta">{level}%</span>
         </p>
+        <p className="mt-2 text-[0.72rem] text-muted-foreground">
+          Índice calculado a partir das suas respostas.
+        </p>
       </Card>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <Card>
-          <p className="eyebrow">Seu tempo</p>
-          <p className="mt-1 text-[0.98rem] font-bold">{timeLabel(answers)}</p>
-        </Card>
-        <Card>
-          <p className="eyebrow">Sua prioridade</p>
-          <p className="mt-1 text-[0.98rem] font-bold">{roomLabel(answers)}</p>
-        </Card>
+      <div className="mt-4 space-y-2">
+        {rows.map(([label, value]) => (
+          <Card key={label} className="py-4">
+            <p className="text-[0.68rem] font-extrabold uppercase tracking-widest text-muted-foreground">
+              {label}
+            </p>
+            <p className="mt-1 text-[0.98rem] font-bold">{value}</p>
+          </Card>
+        ))}
       </div>
+
+      <Card className="mt-4 border-primary/30 bg-surface">
+        <P className="text-[0.92rem]">{d.sentence}</P>
+      </Card>
 
       <p className="headline mt-6 text-[1.05rem]">O que sua rotina precisa:</p>
       <div className="mt-3 space-y-2">
@@ -412,42 +430,49 @@ export function ResultScreen({ answers, onNext }: { answers: Answers; onNext: ()
 
 /* ---------------- 10. REVELAÇÃO DO APP ---------------- */
 
+const appFlow = [
+  "Você abre.",
+  "Vê sua rotina.",
+  "Inicia o cronômetro.",
+  "Marca como concluído.",
+  "E continua sua vida.",
+];
+
 export function AppRevealScreen({ answers, onNext }: { answers: Answers; onNext: () => void }) {
-  const tasks = ["Arrumar a cama", "Reset da cozinha", "Pia do banheiro", "Guardar as roupas"];
+  const d = calculateDiagnosis(answers);
   return (
     <Screen>
-      <p className="eyebrow">Casa no Automático</p>
-      <H className="mt-2">Tudo para sua casa rodar com muito menos improviso.</H>
-      <Photo src={appAsset.url} alt="Aplicativo Casa no Automático" className="mt-5 aspect-[4/5]" />
-      <Card className="mt-4 border-primary/30 bg-surface">
-        <p className="text-[0.7rem] font-extrabold uppercase tracking-widest text-cta">
-          Sua rotina de hoje
-        </p>
-        <p className="headline mt-1 text-[1.3rem]">
-          {timeLabel(answers).replace(" por dia", "")}
-        </p>
-        <div className="mt-3 space-y-2">
-          {tasks.map((t) => (
-            <div
-              key={t}
-              className="flex items-center gap-3 rounded-2xl bg-card px-4 py-3 text-[0.9rem] font-semibold shadow-card"
-            >
-              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 border-primary text-[0.6rem] text-primary">
-                ✓
-              </span>
-              <span className="min-w-0">{t}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
+      <Eyebrow>A sua solução</Eyebrow>
+      <h2 className="headline text-[1.7rem] leading-[1.06] sm:text-[2rem]">
+        Foi exatamente para isso que criamos o{" "}
+        <span className="text-cta">Casa no Automático</span>.
+      </h2>
+      <P className="mt-3">
+        Em vez de carregar a casa inteira na cabeça, você abre o celular e vê apenas o que precisa
+        fazer hoje.
+      </P>
+      <img
+        src={appAsset.url}
+        alt="Aplicativo Casa no Automático aberto no celular"
+        loading="eager"
+        className="mx-auto mt-5 w-full max-w-[420px] rounded-[2rem] object-cover shadow-soft"
+      />
       <div className="mt-5 space-y-2">
-        <P>Você não compra mais uma lista para esquecer depois.</P>
-        <p className="text-[0.98rem] font-bold leading-relaxed">
-          Você abre o celular. Vê sua rotina. Executa. Marca como concluído. E continua amanhã.
-        </p>
+        {appFlow.map((line) => (
+          <div
+            key={line}
+            className="flex items-center gap-3 rounded-2xl bg-card px-4 py-3.5 text-[0.95rem] font-extrabold uppercase tracking-wide shadow-card"
+          >
+            <span className="shrink-0 text-cta">✓</span>
+            <span className="min-w-0">{line}</span>
+          </div>
+        ))}
       </div>
+      <P className="mt-4 text-[0.88rem]">
+        Sua rotina começa por {d.room.toLowerCase()}, em {d.time.toLowerCase()}.
+      </P>
       <div className="mt-6">
-        <Cta onClick={onNext}>Quero conhecer o app</Cta>
+        <Cta onClick={onNext}>Quero ver tudo que recebo</Cta>
       </div>
     </Screen>
   );
@@ -472,7 +497,16 @@ export function DeliverablesScreen({ onNext }: { onNext: () => void }) {
   return (
     <Screen>
       <Eyebrow>O que você recebe</Eyebrow>
-      <H>Tudo pronto para usar hoje</H>
+      <H>Tudo pronto para você usar hoje</H>
+      <P className="mt-3">
+        Você não recebe só uma lista. Recebe um sistema dentro do celular.
+      </P>
+      <img
+        src={appAsset.url}
+        alt="App Casa no Automático no celular"
+        loading="lazy"
+        className="mx-auto mt-5 w-full max-w-[380px] rounded-[2rem] object-cover shadow-soft"
+      />
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {deliverables.map(([title, desc]) => (
           <Card key={title}>
@@ -481,9 +515,34 @@ export function DeliverablesScreen({ onNext }: { onNext: () => void }) {
           </Card>
         ))}
       </div>
-      <Photo src={appAsset.url} alt="App Casa no Automático" className="mt-5 aspect-[4/5]" />
       <div className="mt-6">
-        <Cta onClick={onNext}>Ver minha oferta</Cta>
+        <Cta onClick={onNext}>Continuar</Cta>
+      </div>
+    </Screen>
+  );
+}
+
+/* ---------------- 11b. TRANSFORMAÇÃO VISUAL ---------------- */
+
+export function TransformationScreen({ onNext }: { onNext: () => void }) {
+  return (
+    <Screen>
+      <Eyebrow>Transformação visual</Eyebrow>
+      <h2 className="headline text-[1.7rem] leading-[1.06] sm:text-[2rem]">
+        De casa no sufoco
+        <br />
+        <span className="text-cta">para casa em ordem</span>
+      </h2>
+      <div className="mt-5 space-y-4">
+        <Photo src={cozinhaAsset.url} alt="Cozinha antes e depois" className="aspect-[4/3]" />
+        <Photo src={pisoAsset.url} alt="Piso antes e depois" className="aspect-[4/3]" />
+        <Photo src={casaAsset.url} alt="Casa antes e depois" className="aspect-[4/3]" />
+      </div>
+      <p className="mt-5 text-[1rem] font-bold leading-relaxed">
+        Não é sobre perfeição. É sobre parar de começar tudo do zero.
+      </p>
+      <div className="mt-6">
+        <Cta onClick={onNext}>Eu quero essa sensação na minha casa</Cta>
       </div>
     </Screen>
   );
@@ -492,16 +551,15 @@ export function DeliverablesScreen({ onNext }: { onNext: () => void }) {
 /* ---------------- 12. OFERTA ---------------- */
 
 const faqs = [
-  ["É um ebook?", "Não. É um aplicativo que abre no celular e mostra a rotina do seu dia."],
-  ["Preciso instalar algo?", "Não. Você acessa pelo navegador do celular e pode salvar na tela inicial."],
-  ["Funciona para casa pequena?", "Sim. As rotinas se adaptam ao tamanho da casa e ao tempo disponível."],
-  ["Tenho filhos pequenos, dá conta?", "Dá. Existem rotinas de 10 minutos pensadas para dias corridos."],
-  ["Quanto tempo por dia preciso?", "A partir de 10 minutos. Você escolhe a versão da rotina."],
-  ["É mensalidade?", `Não. São ${PRICE_LABEL} em pagamento único, sem mensalidade.`],
-  ["Quando recebo o acesso?", "Na hora, no seu e-mail, logo após o pagamento."],
-  ["E se eu não gostar?", "Você tem 7 dias de garantia e devolvemos o valor integral."],
-  ["Serve se eu trabalho fora?", "Sim. As rotinas foram feitas para quem tem pouco tempo em casa."],
-  ["Preciso saber organizar?", "Não. Você só segue o que aparece na tela."],
+  ["Tenho pouco tempo. Serve para mim?", "Sim. Existem rotinas de 10, 15, 20 e 30 minutos por dia."],
+  ["Trabalho fora. Funciona?", "Funciona. As rotinas foram pensadas para quem passa pouco tempo em casa."],
+  ["Tenho filhos. Dá conta?", "Dá. Em dias corridos você usa a versão curta da rotina."],
+  ["Moro sozinha. Vale a pena?", "Vale. As rotinas se adaptam ao tamanho da casa e à sua realidade."],
+  ["É mensal?", `Não. São ${PRICE_LABEL} em pagamento único, sem mensalidade.`],
+  ["Como recebo o acesso?", "Por e-mail, logo após a confirmação do pagamento."],
+  ["Preciso instalar algo?", "Não. Você abre pelo navegador do celular e pode salvar na tela inicial."],
+  ["E se eu perder um dia?", "Nada se perde. Você retoma de onde parou, sem começar do zero."],
+  ["Como funciona a garantia?", "Você tem 7 dias. Se não sentir a casa mais leve, devolvemos o valor integral."],
 ] as const;
 
 export function OfferScreen({ answers }: { answers: Answers }) {
@@ -531,33 +589,23 @@ export function OfferScreen({ answers }: { answers: Answers }) {
             </Cta>
           </div>
           <p className="mt-3 text-[0.78rem] text-muted-foreground">
-            Acesso na hora, começando por {roomLabel(answers).toLowerCase()}.
+            Acesso liberado após a confirmação do pagamento. Sua rotina começa por{" "}
+            {roomLabel(answers).toLowerCase()}.
           </p>
         </Card>
       </section>
 
       <section>
-        <Eyebrow>Transformação visual</Eyebrow>
-        <H>De casa no sufoco para casa em ordem</H>
-        <div className="mt-5 space-y-4">
-          <Photo src={cozinhaAsset.url} alt="Cozinha antes e depois" className="aspect-[4/3]" />
-          <Photo src={pisoAsset.url} alt="Piso antes e depois" className="aspect-[4/3]" />
-          <Photo src={casaAsset.url} alt="Casa antes e depois" className="aspect-[4/3]" />
-        </div>
-        <div className="mt-6">
-          <Cta href={href} onClick={checkout}>
-            Quero minha casa assim
-          </Cta>
-        </div>
-      </section>
-
-      <section>
         <Card className="text-center">
-          <p className="headline text-[1.3rem]">Garantia de 7 dias</p>
+          <p className="headline text-[1.3rem]">7 dias de garantia</p>
           <P className="mt-3">
-            Use por 7 dias. Se você não sentir sua casa mais leve, devolvemos cada centavo. Sem
-            perguntas.
+            Use por 7 dias. Se você não sentir sua casa mais leve, devolvemos cada centavo.
           </P>
+          <div className="mt-5">
+            <Cta href={href} onClick={checkout}>
+              Quero testar sem risco
+            </Cta>
+          </div>
         </Card>
       </section>
 
@@ -587,9 +635,12 @@ export function OfferScreen({ answers }: { answers: Answers }) {
         <H className="mt-6">
           A diferença não é ter uma casa perfeita. É parar de precisar recomeçar do zero.
         </H>
-        <div className="mt-6">
+        <p className="mt-4 text-[0.8rem] font-extrabold uppercase tracking-widest text-muted-foreground">
+          {PRICE_LABEL} • Pagamento único
+        </p>
+        <div className="mt-5">
           <Cta href={href} onClick={checkout}>
-            Começar por {PRICE_LABEL}
+            Quero minha Casa no Automático
           </Cta>
         </div>
         <p className="mt-3 text-[0.78rem] text-muted-foreground">

@@ -280,3 +280,82 @@ export function timeLabel(a: Answers): string {
 export function roomLabel(a: Answers): string {
   return a["priority_room"] ?? "Cozinha";
 }
+
+/* ---------- diagnóstico central ---------- */
+
+export type Diagnosis = {
+  overload_score: number;
+  accumulation_score: number;
+  priority_score: number;
+  mental_load_score: number;
+  profile_type: string;
+  profile: Profile;
+  time: string;
+  room: string;
+  block: string;
+  strategy: string;
+  sentence: string;
+};
+
+const blockLabels: Record<string, string> = {
+  por_onde: "Não saber por onde começar",
+  dez_coisas: "Começar e não terminar",
+  tempo: "Falta de tempo e energia",
+  volta: "A bagunça que volta rápido",
+};
+
+const strategyByProfile: Record<string, string> = {
+  prioridades: "Ordem de prioridade + microtarefas diárias",
+  sobrecarga: "Microtarefas curtas + rotina semanal leve",
+  piloto: "Rotina pronta + checklists para tirar decisões da cabeça",
+  acumulo: "Reset diário + manutenção por ambiente",
+};
+
+const roomSentence: Record<string, string> = {
+  Cozinha:
+    "sua rotina inicial deve começar pelo reset da cozinha, para que a louça e o balcão não voltem a comandar o seu dia",
+  Quarto:
+    "sua rotina inicial deve priorizar pequenas tarefas nesse ambiente antes que o acúmulo de roupas e objetos volte",
+  Banheiro:
+    "sua rotina inicial deve incluir uma manutenção rápida do banheiro todos os dias, evitando a limpeza pesada no fim de semana",
+  Sala:
+    "sua rotina inicial deve focar em devolver a sala à ordem em poucos minutos, já que é o ambiente que todos veem primeiro",
+  Lavanderia:
+    "sua rotina inicial deve organizar o fluxo de roupas em etapas curtas, para a montanha não se formar novamente",
+  "A casa toda":
+    "sua rotina inicial deve dividir a casa em blocos pequenos, um ambiente por dia, em vez de tentar resolver tudo de uma vez",
+};
+
+export function calculateDiagnosis(a: Answers): Diagnosis {
+  const s = computeScores(a);
+  const profile = pickProfile(a);
+  const clampPct = (n: number) => Math.max(12, Math.min(96, Math.round(n)));
+
+  const accumulation_score = clampPct(s.acumulo * 10);
+  const mental_load_score = clampPct(s.cargaMental * 10);
+  const priority_score = clampPct((11 - s.clareza) * 10);
+  const overload_score = pressureLevel(a);
+
+  const room = roomLabel(a);
+  const time = timeLabel(a);
+  const blockKey = a["organization_block"] ?? "por_onde";
+  const block = blockLabels[blockKey] ?? "Não saber por onde começar";
+  const strategy = strategyByProfile[profile.id] ?? strategyByProfile["acumulo"]!;
+  const detail = roomSentence[room] ?? roomSentence["Cozinha"]!;
+
+  const sentence = `Como você tem cerca de ${time.toLowerCase()} e indicou ${room.toLowerCase()} como um dos pontos que mais saem do controle, ${detail}.`;
+
+  return {
+    overload_score,
+    accumulation_score,
+    priority_score,
+    mental_load_score,
+    profile_type: profile.id,
+    profile,
+    time,
+    room,
+    block,
+    strategy,
+    sentence,
+  };
+}
