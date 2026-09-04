@@ -88,7 +88,12 @@ function Funnel() {
         if (parsed.answers) setAnswers(parsed.answers);
         if (typeof parsed.index === "number") {
           // nunca restaura direto na tela de análise
-          const restored = steps[parsed.index]?.id === "analysis" ? parsed.index + 1 : parsed.index;
+          const saved = steps[parsed.index];
+          const restored =
+            saved && saved.kind === "screen" && saved.id === "analysis"
+              ? parsed.index + 1
+              : parsed.index;
+
           setIndex(Math.min(Math.max(restored, 0), steps.length - 1));
         }
       }
