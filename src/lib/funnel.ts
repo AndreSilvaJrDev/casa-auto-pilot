@@ -6,7 +6,7 @@ import salaAsset from "@/assets/07_prova_visual_casa.png.asset.json";
 import casaAsset from "@/assets/02_casa_organizada.png.asset.json";
 
 /** Cole aqui a URL de checkout da Kiwify. */
-export const CHECKOUT_URL = "https://pay.kiwify.com.br/SEU-CHECKOUT";
+export const CHECKOUT_URL = "https://pay.kiwify.com.br/PV3pouM";
 
 export const PRICE_LABEL = "R$37";
 
