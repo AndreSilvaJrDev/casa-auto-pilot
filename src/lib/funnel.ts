@@ -31,24 +31,23 @@ export const questions: Record<string, Question> = {
   house_feeling: {
     key: "house_feeling",
     eyebrow: "Responda sinceramente",
-    title: "A sua casa hoje te dá mais paz ou mais peso?",
+    title: "A sua casa hoje te dá paz ou te dá peso?",
     options: [
-      { value: "peso", emoji: "😮‍💨", label: "Mais peso do que paz" },
-      { value: "cansada", emoji: "😓", label: "Vivo cansada e nunca fica como eu queria" },
-      { value: "ciclo", emoji: "🔁", label: "Tem dias bons, mas a bagunça sempre volta" },
+      { value: "peso", emoji: "😮‍💨", label: "Mais peso do que paz, confesso" },
+      { value: "cansada", emoji: "😔", label: "Vivo cansada, nunca fica como eu queria" },
+      { value: "ciclo", emoji: "🤍", label: "Tem dias bons e dias de sufoco" },
       { value: "tranquila", emoji: "🙂", label: "Está tranquila, mas quero melhorar" },
     ],
   },
   main_pain: {
     key: "main_pain",
-    title: "O que mais pesa no seu dia a dia?",
+    eyebrow: "Só mais uma coisa",
+    title: "O que mais te pesa no dia a dia?",
     options: [
       { value: "tudo_em_mim", emoji: "😮‍💨", label: "Sentir que tudo cai em mim" },
-      { value: "sem_energia", emoji: "😴", label: "Viver cansada e sem energia" },
+      { value: "sem_energia", emoji: "😴", label: "Viver cansada, sem energia" },
       { value: "volta", emoji: "🔁", label: "Arrumar e a bagunça voltar" },
-      { value: "visita", emoji: "🙈", label: "Alguém aparecer sem avisar" },
-      { value: "roupa", emoji: "👕", label: "Roupa que nunca termina" },
-      { value: "cozinha", emoji: "🍽", label: "Cozinha que parece não ter fim" },
+      { value: "visita", emoji: "🙈", label: "Ficar desesperada quando alguém aparece" },
     ],
   },
   household: {
@@ -59,44 +58,41 @@ export const questions: Record<string, Question> = {
       { value: "filhos_maiores", label: "Filhos maiores" },
       { value: "parceiro_familia", label: "Parceiro e família" },
       { value: "so_eu", label: "Só de mim e da minha casa" },
-      { value: "familia_grande", label: "Família grande" },
     ],
   },
   mental_load: {
     key: "mental_load",
-    title: "Em casa, quem segura a maior parte da rotina?",
+    title: "Em casa, quem segura a maior parte?",
     options: [
       { value: "tudo_em_mim", emoji: "😩", label: "Praticamente tudo cai em mim" },
-      { value: "quase_tudo", emoji: "🤷", label: "Faço quase tudo e às vezes peço ajuda" },
-      { value: "penso_tudo", emoji: "🙏", label: "Tenho ajuda, mas ainda preciso pensar em tudo" },
-      { value: "dividimos", emoji: "👫", label: "Dividimos, mas falta organização" },
+      { value: "quase_tudo", emoji: "🤷", label: "Eu faço quase tudo" },
+      { value: "penso_tudo", emoji: "🙏", label: "Tenho alguma ajuda, mas o peso ainda é meu" },
+      { value: "dividimos", emoji: "👫", label: "A gente divide, mas falta organização" },
     ],
   },
   phrase: {
     key: "phrase",
     title: "Qual dessas frases mais bate com você?",
     options: [
-      { value: "volta", label: "“Eu arrumei isso ontem e já está bagunçado de novo.”" },
-      { value: "prioridade", label: "“Não sei mais o que fazer primeiro.”" },
-      { value: "cansada", label: "“Termino o dia cansada e parece que não fiz nada.”" },
-      { value: "visita", label: "“Se alguém chegar agora, entro em desespero.”" },
-      { value: "faxina", label: "“Meu fim de semana vira faxina.”" },
+      { value: "volta", emoji: "🔁", label: "“Arrumo e poucos dias depois já está tudo igual.”" },
+      { value: "prioridade", emoji: "🍳", label: "“Não aguento mais pensar no que fazer na cozinha.”" },
+      { value: "cansada", emoji: "😴", label: "“Termino o dia exausta e sinto que não rendeu.”" },
+      { value: "visita", emoji: "😳", label: "“Fico desesperada quando alguém aparece sem avisar.”" },
     ],
   },
   organization_block: {
     key: "organization_block",
-    title: "O que mais te trava quando começa a organizar?",
+    title: "O que mais te trava na hora de organizar?",
     options: [
       { value: "por_onde", emoji: "🤯", label: "Não sei por onde começar" },
-      { value: "dez_coisas", emoji: "⏳", label: "Começo uma coisa e encontro outras dez" },
+      { value: "dez_coisas", emoji: "⏳", label: "Começo e nunca termino" },
       { value: "tempo", emoji: "😮‍💨", label: "Falta tempo e energia" },
-      { value: "volta", emoji: "🔁", label: "Arrumo, mas logo volta tudo" },
-      { value: "rotina_pronta", emoji: "📋", label: "Precisava de uma rotina pronta" },
+      { value: "volta", emoji: "🔁", label: "Arrumo e logo volta tudo" },
     ],
   },
   available_time: {
     key: "available_time",
-    title: "Se você soubesse exatamente o que fazer, quanto tempo conseguiria separar por dia?",
+    title: "Quanto tempo você conseguiria separar por dia?",
     options: [
       { value: "10", label: "10 minutos" },
       { value: "15", label: "15 minutos" },
@@ -107,7 +103,7 @@ export const questions: Record<string, Question> = {
   },
   priority_room: {
     key: "priority_room",
-    title: "Qual ambiente mais faz você sentir que perdeu o controle?",
+    title: "Qual ambiente mais te faz perder o controle?",
     layout: "cards",
     options: [
       { value: "Cozinha", label: "Cozinha", image: cozinhaAsset.url },
@@ -120,26 +116,25 @@ export const questions: Record<string, Question> = {
   },
   desired_result: {
     key: "desired_result",
-    title: "Qual seria sua maior vitória?",
+    title: "Qual seria a sua maior vitória?",
     options: [
-      { value: "controle", emoji: "🏡", label: "Sentir que minha casa está sob controle" },
-      { value: "refeicoes", emoji: "🍽", label: "Parar de decidir tudo em cima da hora" },
-      { value: "tempo", emoji: "🕊", label: "Ter mais tempo para mim" },
+      { value: "controle", emoji: "🏡", label: "Ter a casa em ordem sem sofrer" },
+      { value: "refeicoes", emoji: "🍽", label: "Ter a cozinha organizada" },
+      { value: "tempo", emoji: "🕊", label: "Ter mais tempo e paz" },
       { value: "orgulho", emoji: "👑", label: "Sentir orgulho da minha casa" },
-      { value: "cabeca", emoji: "🧠", label: "Tirar a rotina da casa da cabeça" },
     ],
   },
   commitment: {
     key: "commitment",
-    title:
-      "Se existisse um caminho simples, barato e que coubesse na sua rotina, você começaria hoje?",
+    title: "Se existisse um caminho simples e barato, você começaria hoje?",
     options: [
-      { value: "agora", emoji: "🔥", label: "Sim, já passou da hora" },
-      { value: "simples", emoji: "💕", label: "Sim, se for simples" },
-      { value: "recomecar", emoji: "✅", label: "Quero parar de recomeçar" },
+      { value: "agora", emoji: "🔥", label: "Sim, estou decidida" },
+      { value: "simples", emoji: "💕", label: "Sim, se for fácil" },
+      { value: "recomecar", emoji: "✅", label: "Já passou da hora" },
     ],
   },
 };
+
 
 export const QUESTION_KEYS = Object.keys(questions);
 
