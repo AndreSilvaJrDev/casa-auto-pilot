@@ -57,6 +57,21 @@ export function Fade({ children, className }: { children: ReactNode; className?:
   return <div className={cn("animate-in fade-in slide-in-from-bottom-2 duration-500", className)}>{children}</div>;
 }
 
+export function Screen({ children, className }: { children: ReactNode; className?: string }) {
+  return <Fade className={cn("pt-1", className)}>{children}</Fade>;
+}
+
+export function Trust() {
+  return (
+    <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[0.75rem] font-semibold text-muted-foreground">
+      <li>⏰ Leva 1 minuto</li>
+      <li>🔒 Respostas privadas</li>
+      <li>🛡️ Resultado personalizado</li>
+    </ul>
+  );
+}
+
+
 export function Eyebrow({ children }: { children: ReactNode }) {
   return <p className="eyebrow mb-3">{children}</p>;
 }
