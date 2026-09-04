@@ -138,7 +138,7 @@ function Funnel() {
   };
 
   const step = steps[index] ?? steps[0]!;
-  const showProgress = index > 0 && step.kind !== "screen" ? true : index > 0 && step.id !== "sales";
+  const showProgress = index > 0 && !(step.kind === "screen" && step.id === "sales");
   const onBack = index > 0 && !(step.kind === "screen" && (step.id === "analysis" || step.id === "sales"))
     ? () => go(index - 1)
     : undefined;
